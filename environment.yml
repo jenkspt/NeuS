@@ -1,0 +1,21 @@
+name: neus
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.8
+  - pytorch
+  - cudatoolkit=11.3
+  - numpy
+  - scipy
+  - trimesh>=3.9.8
+  - opencv>=4.5.2.52
+  - pyhocon==0.3.57
+  - icecream>=2.1.0
+  - ipython
+  - tqdm
+  - tensorboard
+  - pip
+  - pip:
+      - PyMCubes>=0.1.2

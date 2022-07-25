@@ -2,6 +2,7 @@ import os
 import time
 import logging
 import argparse
+from itertools import chain
 import numpy as np
 import cv2 as cv
 import trimesh
@@ -13,7 +14,7 @@ from icecream import ic
 from tqdm import tqdm
 from pyhocon import ConfigFactory
 from models.dataset import Dataset
-from models.fields import RenderingNetwork, SDFNetwork, SingleVarianceNetwork, NeRF
+from models.hash_fields import RenderingNetwork, SDFNetwork, SingleVarianceNetwork, NeRF
 from models.renderer import NeuSRenderer
 
 
@@ -58,17 +59,26 @@ class Runner:
         self.writer = None
 
         # Networks
-        params_to_train = []
         self.nerf_outside = NeRF(**self.conf['model.nerf']).to(self.device)
         self.sdf_network = SDFNetwork(**self.conf['model.sdf_network']).to(self.device)
         self.deviation_network = SingleVarianceNetwork(**self.conf['model.variance_network']).to(self.device)
         self.color_network = RenderingNetwork(**self.conf['model.rendering_network']).to(self.device)
-        params_to_train += list(self.nerf_outside.parameters())
-        params_to_train += list(self.sdf_network.parameters())
-        params_to_train += list(self.deviation_network.parameters())
-        params_to_train += list(self.color_network.parameters())
+        params_to_train = [
+            *self.nerf_outside.named_parameters(),
+            *self.sdf_network.named_parameters(),
+            *self.color_network.named_parameters()]
 
-        self.optimizer = torch.optim.Adam(params_to_train, lr=self.learning_rate)
+        cond = lambda p: ('interp' in p) or ('bias' in p)
+        weight_decay_params = [p[1] for p in params_to_train if not cond(p[0])]
+        other_params = [p[1] for p in params_to_train if cond(p[0])]
+        print('L2 PARAMS:', len(weight_decay_params))
+        print('OTHER PARAMS:', len(other_params))
+
+        self.optimizer = torch.optim.AdamW([
+            {'params': weight_decay_params, 'weight_decay': 1e-6},
+            {'params': self.deviation_network.parameters()},
+            {'params': other_params},],
+            lr=self.learning_rate, betas=(.9, .99), eps=1e-15, weight_decay=0.0)
 
         self.renderer = NeuSRenderer(self.nerf_outside,
                                      self.sdf_network,

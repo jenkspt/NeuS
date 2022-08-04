@@ -1,6 +1,6 @@
 # Multires Hash Encoding with NeuS
 
-This is an experiment replacing the nerf-like models from NeuS with drop in multires hash encoding models inspired by NVIDIA [InstantNGP](https://nvlabs.github.io/instant-ngp/). The multires hash encoding models are located in [models/hash_fields](./models/hash_fields).
+This is an experiment replacing the nerf-like models from NeuS with drop in multires hash encoding models inspired by NVIDIA [InstantNGP](https://nvlabs.github.io/instant-ngp/). The multires hash encoding models are located in [models/hash_fields.py](models/hash_fields.py).
 
 | ![5K steps with neural hash encoding models](./static/5k_hash.png) | ![5K steps with original Neus models](./static/5k_original.png)|
 |:---:|:---:|

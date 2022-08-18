@@ -13,7 +13,6 @@ from multires_hash_encoding.modules import (
 )
 
 
-# This implementation is borrowed from IDR: https://github.com/lioryariv/idr
 class SDFNetwork(nn.Sequential):
     def __init__(self,
                  d_in,
@@ -48,7 +47,6 @@ class SDFNetwork(nn.Sequential):
         return gradients.unsqueeze(1)
 
 
-# This implementation is borrowed from IDR: https://github.com/lioryariv/idr
 class RenderingNetwork(nn.Module):
     def __init__(self,
                  d_feature,
@@ -72,7 +70,6 @@ class RenderingNetwork(nn.Module):
         return h
 
 
-# This implementation is borrowed from nerf-pytorch: https://github.com/yenchenlin/nerf-pytorch
 class NeRF(nn.Module):
     def __init__(self,
                  D=3,

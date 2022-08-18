@@ -6,9 +6,16 @@ This is an experiment replacing the nerf-like models from NeuS with drop in mult
 |:---:|:---:|
 | *Hash encoding after 5K steps (top). Ground truth (bottom)* | *Original NeuS after 5K steps (top). Ground truth (bottom)* |  
 
+- **Training hash model without mask**
+
+```shell
+python exp_runner.py --mode train --conf ./confs/womask_hash.conf --case thin_cube
+```
+
 Also see:
 - [Multires Hash Encoding Pytorch](https://github.com/jenkspt/multires-hash-encoding-pytorch.git)  
 <br>
+
 
 (Original README ...)  
 # Neus
